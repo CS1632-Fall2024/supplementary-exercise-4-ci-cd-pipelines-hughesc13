@@ -20,10 +20,12 @@ jobs:
   # This workflow contains a single job called "greet"
   greet:
     # The type of runner that the job will run on
+    #runs on key defines the docker container on top of whcih the job will run, which is ubuntu-latest, which is docker container op system
     runs-on: ubuntu-latest
 
     # Steps represent a sequence of tasks that will be executed as part of the job
     steps:
     # Runs a single command using the runners shell
+    #the dash means it was part of a list
     - name: Send greeting
       run: echo "Hello ${{ github.event.inputs.name }}"
