@@ -28,7 +28,7 @@ public interface Cat {
 				assert(false);
 				return null;
 		}
-	}
+	}//hello!
 
 	// WARNING: You are not allowed to change any part of the interface.
 	// That means you cannot add any method nor modify any of these methods.
