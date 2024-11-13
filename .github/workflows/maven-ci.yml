@@ -13,16 +13,18 @@ jobs:
   
   # Runs the Maven test phase on the project
   maven_test:
-
+    
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
 
     steps:
-
+  #first it checks out repo
+  #this is important bc remember this test is not happening on ur laptop its happning on a continer in the cloud
     # The uses: keyword invokes a GitHub action:
     # https://github.com/marketplace/actions/checkout
+    #checkout is party of a marketplace. a marketplace of third party actions and actions published by github
     - name: Checkout repository
       uses: actions/checkout@v3
 
@@ -39,6 +41,7 @@ jobs:
       run: mvn test
 
     # https://github.com/marketplace/actions/upload-a-build-artifact
+    #this info we want to keep around for more than 24 hrs. which is why we use this action to put it in artifact storage
     - name: Upload jacoco results as artifact
       uses: actions/upload-artifact@v3
       with:

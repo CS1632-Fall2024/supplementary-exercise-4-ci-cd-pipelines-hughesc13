@@ -12,6 +12,8 @@ import static org.mockito.Mockito.*;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class RentACatUnitTest {
@@ -42,24 +44,30 @@ public class RentACatUnitTest {
 		// Passing InstanceType.MOCK as the first parameter will create a mock RentACat object using Mockito.
 		// Which type is the correct choice for this unit test?  I'll leave it up to you.  The answer is in the Unit Testing Part 2 lecture. :)
 		// TODO: Fill in
+		r = RentACat.createInstance(InstanceType.IMPL);
 
 		// 2. Create a Cat with ID 1 and name "Jennyanydots", assign to c1 using a call to Cat.createInstance(InstanceType, int, String).
 		// Passing InstanceType.IMPL as the first parameter will create a real cat using your CatImpl implementation.
 		// Passing InstanceType.MOCK as the first parameter will create a mock cat using Mockito.
 		// Which type is the correct choice for this unit test?  Again, I'll leave it up to you.
 		// TODO: Fill in
+		c1 = Cat.createInstance(InstanceType.MOCK, 1, "Jennyanydots");
 
 		// 3. Create a Cat with ID 2 and name "Old Deuteronomy", assign to c2 using a call to Cat.createInstance(InstanceType, int, String).
 		// TODO: Fill in
+		c2 = Cat.createInstance(InstanceType.MOCK, 2, "Old Deuteronomy");
 
 		// 4. Create a Cat with ID 3 and name "Mistoffelees", assign to c3 using a call to Cat.createInstance(InstanceType, int, String).
 		// TODO: Fill in
+		c3 = Cat.createInstance(InstanceType.MOCK, 3, "Mistoffelees");
 
 		// 5. Redirect system output from stdout to the "out" stream
-		// First, make a back up of System.out (which is the stdout to the console)
+		// First, make a back up of System.out (which is the stdout to the console) ??? why do i need a back up of system.out? what is a backup? am i supposed to use it in testing?
 		stdout = System.out;
 		// Second, update System.out to the PrintStream created from "out"
 		// TODO: Fill in.  Refer to the textbook chapter 14.6 on Testing System Output.
+		out = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(out));
 	}
 
 	@After
@@ -92,7 +100,24 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testGetCatNullNumCats0() {
-		// TODO: Fill in
+		try {
+			//preconditions
+			Method method = r.getClass().getDeclaredMethod("getCat", int.class); 
+			//say int.class instead of int. getdelaredmethod() expects string and a parameter of class type. int is not a class type. so we call int.class to get int's class type. which returns class of int type
+			method.setAccessible(true);
+
+			//execution steps 
+			Object returnValue = method.invoke(r, 2);//invokes method on object r by sending parameter 2
+
+			//postcondition
+			Cat ret = (Cat) returnValue; 
+			assertEquals(null, ret);
+			//assertEquals(null, out); //out is null! uh oh
+			assertEquals("Invalid cat ID.\n", out.toString());
+			//how to see test results? ie. output?
+		} catch (NoSuchMethodException|IllegalAccessException|InvocationTargetException ex) { // The method does not exist
+			fail();
+		}
 	}
 
 	/**
@@ -112,7 +137,29 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testGetCatNumCats3() {
-		// TODO: Fill in
+		try {
+			//preconditions
+			r.addCat(c1);
+			r.addCat(c2);
+			r.addCat(c3);
+			
+		
+			Method method = r.getClass().getDeclaredMethod("getCat", int.class); 
+			//say int.class instead of int. getdelaredmethod() expects string and a parameter of class type. int is not a class type. so we call int.class to get int's class type. which returns class of int type
+			method.setAccessible(true);
+
+
+			//execution steps 
+			Object returnValue = method.invoke(r, 2);//invokes method on object r by sending parameter 2
+
+			//postcondition
+			Cat ret = (Cat) returnValue; 
+			assertNotNull("Return value is null, error", ret);
+			assertEquals(2, ret.getId());
+			//how to see test results? ie. output?
+		} catch (NoSuchMethodException|IllegalAccessException|InvocationTargetException ex) { // The method does not exist
+			fail();
+		}
 	}
 
 	/**
@@ -126,7 +173,10 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testListCatsNumCats0() {
-		// TODO: Fill in
+		//execute
+		String ret = r.listCats();
+		//postconditions
+		assertEquals("", ret);
 	}
 
 	/**
@@ -141,7 +191,13 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testListCatsNumCats3() {
-		// TODO: Fill in
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
+		//execute
+		String ret = r.listCats();
+		//postconditions
+		assertEquals("ID 1. Jennyanydots\nID 2. Old Deuteronomy\nID 3. Mistoffelees\n", ret);
 	}
 
 	/**
@@ -161,7 +217,12 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testRenameFailureNumCats0() {
-		// TODO: Fill in
+		//execute
+		boolean ret = r.renameCat(2, "Garfield");
+		//postconditions
+		assertEquals(false, ret);
+		assertNotEquals("Garfield", c2.getName());
+		assertEquals("Invalid cat ID.\n", out.toString());
 	}
 
 	/**
@@ -180,7 +241,16 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testRenameNumCat3() {
-		// TODO: Fill in
+		//preconditions
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
+
+		boolean ret = r.renameCat(2, "Garfield");
+
+		//postconditions
+		assertEquals(true, ret);
+		Mockito.verify(c2, Mockito.times(1)).renameCat("Garfield");
 	}
 
 	/**
@@ -200,7 +270,18 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testRentCatNumCats3() {
-		// TODO: Fill in
+		//preconditions
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
+
+		//execution 
+		boolean ret = r.rentCat(2);
+
+		//postcondition
+		assertEquals(true, ret);
+		Mockito.verify(c2, times(1)).rentCat();//verifying that rentcat was called on cat object c2
+		assertEquals("Old Deuteronomy has been rented.\n", out.toString());
 	}
 
 	/**
@@ -221,7 +302,20 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testRentCatFailureNumCats3() {
-		// TODO: Fill in
+		//preconditions
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
+		//we tell it to return true....bc c2 is RENTED!! this is how we ensure that c2 acts as though it is rented.
+		Mockito.when(c2.getRented()).thenReturn(true);
+	
+		//exectuion
+		boolean ret = r.rentCat(2);
+
+		//postconditions
+		assertEquals(false, ret);
+		Mockito.verify(c2, Mockito.times(0)).rentCat();
+		assertEquals("Sorry, Old Deuteronomy is not here!\n", out.toString());
 	}
 
 	/**
@@ -242,7 +336,20 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testReturnCatNumCats3() {
-		// TODO: Fill in
+		//preconditions
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
+		//we tell it to return true....bc c2 is RENTED!! this is how we ensure that c2 acts as though it is rented.
+		Mockito.when(c2.getRented()).thenReturn(true);
+
+		//exectuion
+		boolean ret = r.returnCat(2);
+
+		//postconditions
+		assertEquals(true, ret);
+		Mockito.verify(c2, Mockito.times(1)).returnCat();
+		assertEquals("Welcome back, Old Deuteronomy!\n", out.toString());
 	}
 
 	/**
@@ -262,7 +369,18 @@ public class RentACatUnitTest {
 	 */
 	@Test
 	public void testReturnFailureCatNumCats3() {
-		// TODO: Fill in
+		//preconditions
+		r.addCat(c1);
+		r.addCat(c2);
+		r.addCat(c3);
+
+		//exectuion
+		boolean ret = r.returnCat(2);
+
+		//postconditions
+		assertEquals(false, ret);
+		Mockito.verify(c2, Mockito.times(0)).returnCat();
+		assertEquals("Old Deuteronomy is already here!\n", out.toString());
 	}
 
 }

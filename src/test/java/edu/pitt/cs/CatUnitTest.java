@@ -12,6 +12,8 @@ import static org.mockito.Mockito.*;
 
 @FixMethodOrder(MethodSorters.NAME_ASCENDING)
 public class CatUnitTest {
+	int id = 1;
+	String name = "Jennyanydots";
 
 	/**
 	 * The test fixture for this JUnit test. Test fixture: a fixed state of a set of
@@ -32,6 +34,8 @@ public class CatUnitTest {
 		// Passing InstanceType.MOCK as the first parameter will create a mock cat using Mockito.
 		// Which type is the correct choice for this unit test?  I'll leave it up to you.  The answer is in the Unit Testing Part 2 lecture. :)
 		// TODO: Fill in
+		// System.out.println("hello!");
+		c = Cat.createInstance(InstanceType.BUGGY, id, name);
 	}
 
 	@After
@@ -53,6 +57,9 @@ public class CatUnitTest {
 	@Test
 	public void testGetId() {
 		// TODO: Fill in
+		// System.out.println("hello!");
+		int ret = c.getId();
+		assertEquals(id, ret);
 	}
 
 	/**
@@ -66,6 +73,8 @@ public class CatUnitTest {
 	 */
 	@Test
 	public void testGetName() {
+		String ret = c.getName();
+		assertEquals(name, ret);
 		// TODO: Fill in
 	}
 
@@ -80,6 +89,8 @@ public class CatUnitTest {
 	 */
 	@Test
 	public void testGetRented() {
+		boolean ret = c.getRented();
+		assertEquals(false, ret);
 		// TODO: Fill in
 	}
 
@@ -94,6 +105,8 @@ public class CatUnitTest {
 	 */
 	@Test
 	public void testToString() {
+		String ret = c.toString();
+		assertEquals("ID 1. Jennyanydots", ret);
 		// TODO: Fill in
 	}
 
@@ -109,7 +122,9 @@ public class CatUnitTest {
 	 */
 	@Test
 	public void testRentCat() {
-		// TODO: Fill in
+		c.rentCat();
+		boolean ret = c.getRented();
+		assertEquals(true, ret);
 	}
 
 	/**
@@ -125,6 +140,9 @@ public class CatUnitTest {
 	 */
 	@Test
 	public void testReturnCat() {
+		c.returnCat();
+		boolean ret = c.getRented();
+		assertEquals(false, ret);
 		// TODO: Fill in
 	}
 
@@ -140,7 +158,11 @@ public class CatUnitTest {
 	 */
 	@Test
 	public void testRenameCat() {
-		// TODO: Fill in
+		c.renameCat("Garfield");
+		String name = c.getName();
+		String nameAndID = c.toString();
+		assertEquals("Garfield", name);
+		assertEquals("ID 1. Garfield", nameAndID);
 	}
 
 }
