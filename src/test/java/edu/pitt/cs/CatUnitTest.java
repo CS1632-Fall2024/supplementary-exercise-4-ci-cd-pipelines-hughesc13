@@ -35,7 +35,7 @@ public class CatUnitTest {
 		// Which type is the correct choice for this unit test?  I'll leave it up to you.  The answer is in the Unit Testing Part 2 lecture. :)
 		// TODO: Fill in
 		// System.out.println("hello!");
-		c = Cat.createInstance(InstanceType.BUGGY, id, name);
+		c = Cat.createInstance(InstanceType.IMPL, id, name);
 	}
 
 	@After

@@ -118,6 +118,7 @@ public class RentACatUnitTest {
 		} catch (NoSuchMethodException|IllegalAccessException|InvocationTargetException ex) { // The method does not exist
 			fail();
 		}
+
 	}
 
 	/**
