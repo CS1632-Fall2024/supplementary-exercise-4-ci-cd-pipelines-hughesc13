@@ -2,7 +2,6 @@ package edu.pitt.cs;
 
 import org.mockito.Mockito;
 import static org.mockito.Mockito.*; 
-///i am adding xtra comments to see if i commit again if itll work
 
 public interface Cat {
 	public static Cat createInstance(InstanceType type, int id, String name) {
@@ -28,7 +27,7 @@ public interface Cat {
 				assert(false);
 				return null;
 		}
-	}//hello!
+	}
 
 	// WARNING: You are not allowed to change any part of the interface.
 	// That means you cannot add any method nor modify any of these methods.
